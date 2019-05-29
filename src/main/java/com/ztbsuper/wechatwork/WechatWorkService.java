@@ -5,13 +5,12 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * Created by lcs on 2019-05-28.
  */
-@Slf4j
 public class WechatWorkService extends Notifier {
 	private static JSONObject ACCESS_TOKEN_INFO = new JSONObject();
 

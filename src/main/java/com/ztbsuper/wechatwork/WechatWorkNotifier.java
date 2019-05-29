@@ -1,6 +1,5 @@
 package com.ztbsuper.wechatwork;
 
-import com.ztbsuper.dingding.DingdingNotifier;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -10,9 +9,6 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
-import jenkins.model.Jenkins;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -20,8 +16,6 @@ import java.io.IOException;
 /**
  * Created by lcs on 2019-05-28.
  */
-@Slf4j
-@Data
 public class WechatWorkNotifier extends Notifier {
 
 	private String jenkinsURL;
@@ -57,7 +51,7 @@ public class WechatWorkNotifier extends Notifier {
 		try {
 			WechatWorkService.sendMessage(this.corpid, this.corpsecret, this.agentid, this.toUser, message);
 		} catch (Exception e) {
-			log.error("send message error", e);
+//			log.error("send message error", e);
 		}
 
 	}
@@ -83,5 +77,41 @@ public class WechatWorkNotifier extends Notifier {
 		public String getDisplayName() {
 			return "企业微信通知器配置";
 		}
+	}
+
+	public String getJenkinsURL() {
+		return jenkinsURL;
+	}
+
+	public String getCorpid() {
+		return corpid;
+	}
+
+	public String getCorpsecret() {
+		return corpsecret;
+	}
+
+	public String getAgentid() {
+		return agentid;
+	}
+
+	public String getToUser() {
+		return toUser;
+	}
+
+	public Boolean getOnStart() {
+		return onStart;
+	}
+
+	public Boolean getOnSuccess() {
+		return onSuccess;
+	}
+
+	public Boolean getOnFailed() {
+		return onFailed;
+	}
+
+	public Boolean getOnAbort() {
+		return onAbort;
 	}
 }

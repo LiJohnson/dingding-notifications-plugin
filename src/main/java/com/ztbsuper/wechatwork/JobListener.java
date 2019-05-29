@@ -18,7 +18,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 	public void onCompleted(AbstractBuild build, @Nonnull TaskListener listener) {
 		WechatWorkNotifier wechatWorkNotifier = getService(build, listener);
 		Result result = build.getResult();
-		String content = String.format("项目 %s [%s] , ", build.getProject().getDisplayName(), build.getDisplayName());
+		String content = String.format("项目 [%s](%s), ", build.getProject().getDisplayName(), build.getDisplayName());
 		String status  = "构建中断";
 		if(result != null){
 			if(wechatWorkNotifier.getOnSuccess() && Result.SUCCESS.equals(result)){
@@ -34,21 +34,21 @@ public class JobListener extends RunListener<AbstractBuild> {
 	public void onStarted(AbstractBuild build, TaskListener listener) {
 		WechatWorkNotifier wechatWorkNotifier = getService(build, listener);
 		if(wechatWorkNotifier.getOnStart()){
-			String content = String.format("项目[%s%s]开始构建", build.getProject().getDisplayName(), build.getDisplayName());
+			String content = String.format("项目 [%s](%s) 开始构建", build.getProject().getDisplayName(), build.getDisplayName());
 			wechatWorkNotifier.sendMessage(content);
 		}
 	}
 
 	private WechatWorkNotifier getService(AbstractBuild build, TaskListener listener) {
 		WechatWorkNotifier wechatWorkNotifier = null;
-//		wechatWorkNotifier = (WechatWorkNotifier) build.getProject()
-//				.getPublishersList()
-//				.toMap()
-//				.values()
-//				.stream()
-//				.filter(publisher -> publisher instanceof WechatWorkNotifier)
-//				.findFirst()
-//				.orElse(null);
+		wechatWorkNotifier = (WechatWorkNotifier) build.getProject()
+				.getPublishersList()
+				.toMap()
+				.values()
+				.stream()
+				.filter(publisher -> publisher instanceof WechatWorkNotifier)
+				.findFirst()
+				.orElse(null);
 
 		Assert.notNull(wechatWorkNotifier,"没有找到 WechatWorkNotifier");
 		return wechatWorkNotifier;

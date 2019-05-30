@@ -103,18 +103,22 @@ public class WechatWorkNotifier extends Notifier {
 	}
 
 	public Boolean getOnStart() {
+		if(onStart == null) return Boolean.FALSE;
 		return onStart;
 	}
 
 	public Boolean getOnSuccess() {
+		if(onSuccess == null) return Boolean.FALSE;
 		return onSuccess;
 	}
 
 	public Boolean getOnFailed() {
+		if(onFailed == null) return Boolean.FALSE;
 		return onFailed;
 	}
 
 	public Boolean getOnAbort() {
+		if(onAbort == null) return Boolean.FALSE;
 		return onAbort;
 	}
 }

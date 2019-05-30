@@ -19,17 +19,23 @@ public class JobListener extends RunListener<AbstractBuild> {
 	public void onCompleted(AbstractBuild build, @Nonnull TaskListener listener) {
 		WechatWorkNotifier wechatWorkNotifier = getService(build, listener);
 		Result result = build.getResult();
-		String content = String.format("项目 [%s](%s), ", build.getProject().getDisplayName(), build.getDisplayName());
-		String status  = "构建中断";
-		if(result != null){
-			if(wechatWorkNotifier.getOnSuccess() && Result.SUCCESS.equals(result)){
-				status = "构建成功";
-			}else if( wechatWorkNotifier.getOnFailed() && Result.FAILURE.equals(result) ){
-				status = "构建失败";
-			}
-			status = String.format(" %s (%s/%s)", status, result, result.ordinal);
+
+		if(!checkSendMessage(result, wechatWorkNotifier)) return;
+
+		String content = String.format("【%Tc】项目 [%s](%s), 构建结果: %s", new Date(), build.getProject().getDisplayName(), build.getDisplayName(), result == null ? "null" : result);
+		wechatWorkNotifier.sendMessage(content);
+	}
+
+	private static Boolean checkSendMessage(Result result, WechatWorkNotifier wechatWorkNotifier) {
+		if(result == null ){
+			return wechatWorkNotifier.getOnAbort();
+		}else if(result.equals(Result.SUCCESS) && wechatWorkNotifier.getOnSuccess()){
+			return true;
+		}else if(result.equals(Result.FAILURE) && wechatWorkNotifier.getOnFailed()){
+			return true;
+		}else{
+			return wechatWorkNotifier.getOnAbort();
 		}
-		wechatWorkNotifier.sendMessage(String.format("【%Tc】%s %s", new Date(), content, status));
 	}
 
 	@Override

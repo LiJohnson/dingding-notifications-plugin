@@ -11,16 +11,8 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Created by lcs on 2019-05-28.
  */
-public class WechatWorkService extends Notifier {
+public class WechatWorkService {
 	private static JSONObject ACCESS_TOKEN_INFO = new JSONObject();
-
-	@Override
-
-	public BuildStepMonitor getRequiredMonitorService() {
-
-		return BuildStepMonitor.NONE;
-	}
-
 
 	private static String getAccessToken(String corpid, String corpsecret) throws UnirestException {
 		String token = ACCESS_TOKEN_INFO.getString("access_token");

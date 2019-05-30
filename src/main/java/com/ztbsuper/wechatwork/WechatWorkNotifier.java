@@ -1,10 +1,12 @@
 package com.ztbsuper.wechatwork;
 
 import hudson.Extension;
+
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.JobProperty;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
@@ -55,14 +57,15 @@ public class WechatWorkNotifier extends Notifier {
 		}
 
 	}
+
 	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
 		return true;
 	}
 
 	@Override
-	public WechatWorkNotifierDescriptor getDescriptor() {
-		return (WechatWorkNotifierDescriptor) super.getDescriptor();
+	public BuildStepDescriptor getDescriptor() {
+		return super.getDescriptor();
 	}
 	@Extension
 	public static class WechatWorkNotifierDescriptor extends BuildStepDescriptor<Publisher> {

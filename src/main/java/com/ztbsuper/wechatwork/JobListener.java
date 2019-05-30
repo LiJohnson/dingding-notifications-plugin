@@ -29,11 +29,11 @@ public class JobListener extends RunListener<AbstractBuild> {
 	private static Boolean checkSendMessage(Result result, WechatWorkNotifier wechatWorkNotifier) {
 		if(result == null ){
 			return wechatWorkNotifier.getOnAbort();
-		}else if(result.equals(Result.SUCCESS) && wechatWorkNotifier.getOnSuccess()){
-			return true;
-		}else if(result.equals(Result.FAILURE) && wechatWorkNotifier.getOnFailed()){
-			return true;
-		}else{
+		}else if(result.equals(Result.SUCCESS) ){
+			return wechatWorkNotifier.getOnSuccess();
+		}else if(result.equals(Result.FAILURE) ){
+			return wechatWorkNotifier.getOnFailed();
+		}else {
 			return wechatWorkNotifier.getOnAbort();
 		}
 	}

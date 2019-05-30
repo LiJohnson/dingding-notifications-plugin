@@ -8,6 +8,7 @@ import hudson.model.listeners.RunListener;
 import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
+import java.util.Date;
 
 /**
  * Created by lcs on 2019-05-28.
@@ -26,8 +27,9 @@ public class JobListener extends RunListener<AbstractBuild> {
 			}else if( wechatWorkNotifier.getOnFailed() && Result.FAILURE.equals(result) ){
 				status = "构建失败";
 			}
+			status = String.format(" %s (%s/%s)", status, result, result.ordinal);
 		}
-		wechatWorkNotifier.sendMessage(content + status);
+		wechatWorkNotifier.sendMessage(String.format("【%Tc】%s %s", new Date(), content, status));
 	}
 
 	@Override

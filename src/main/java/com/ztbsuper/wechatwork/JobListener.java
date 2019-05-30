@@ -5,6 +5,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
@@ -17,13 +18,12 @@ import java.util.Date;
 public class JobListener extends RunListener<AbstractBuild> {
 	@Override
 	public void onCompleted(AbstractBuild build, @Nonnull TaskListener listener) {
-		WechatWorkNotifier wechatWorkNotifier = getService(build, listener);
+		WechatWorkNotifier wechatWorkNotifier = getService(build);
 		Result result = build.getResult();
 
 		if(!checkSendMessage(result, wechatWorkNotifier)) return;
 
-		String content = String.format("【%Tc】项目 [%s](%s), 构建结果: %s", new Date(), build.getProject().getDisplayName(), build.getDisplayName(), result == null ? "null" : result);
-		wechatWorkNotifier.sendMessage(content);
+		wechatWorkNotifier.sendMessage(getBuildMessage(wechatWorkNotifier, build, result));
 	}
 
 	private static Boolean checkSendMessage(Result result, WechatWorkNotifier wechatWorkNotifier) {
@@ -40,14 +40,14 @@ public class JobListener extends RunListener<AbstractBuild> {
 
 	@Override
 	public void onStarted(AbstractBuild build, TaskListener listener) {
-		WechatWorkNotifier wechatWorkNotifier = getService(build, listener);
+		WechatWorkNotifier wechatWorkNotifier = getService(build);
 		if(wechatWorkNotifier.getOnStart()){
 			String content = String.format("项目 [%s](%s) 开始构建", build.getProject().getDisplayName(), build.getDisplayName());
 			wechatWorkNotifier.sendMessage(content);
 		}
 	}
 
-	private WechatWorkNotifier getService(AbstractBuild build, TaskListener listener) {
+	private WechatWorkNotifier getService(AbstractBuild build) {
 		WechatWorkNotifier wechatWorkNotifier = null;
 		wechatWorkNotifier = (WechatWorkNotifier) build.getProject()
 				.getPublishersList()
@@ -61,4 +61,26 @@ public class JobListener extends RunListener<AbstractBuild> {
 		Assert.notNull(wechatWorkNotifier,"没有找到 WechatWorkNotifier");
 		return wechatWorkNotifier;
 	}
+
+	private static Articles getBuildMessage(WechatWorkNotifier wechatWorkNotifier ,AbstractBuild build, Result result) {
+		Articles articles = new Articles();
+		if(StringUtils.isNotBlank(wechatWorkNotifier.getJenkinsURL())){
+			articles.setUrl(wechatWorkNotifier.getJenkinsURL() + (wechatWorkNotifier.getJenkinsURL().endsWith("/") ? "" : "/") + build.getUrl());
+		}
+		if( Result.SUCCESS.equals(result)){
+			articles.setPicurl("http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/sign-check-icon.png");
+		}else if( Result.FAILURE.equals(result) ){
+			articles.setPicurl("http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/sign-error-icon.png");
+		}else {
+			articles.setPicurl("http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/sign-ban-icon.png");
+		}
+		String node = build.getBuiltOn().getNodeName();
+		articles.setTitle(String.format("%s (%s) => %s", build.getProject().getDisplayName(), build.getDisplayName(), result == null ? "null" : result));
+		articles.setDescription(String.format(
+				"node:%s,\nsummary:%s,\nduration:%s", StringUtils.isBlank(node) ? node : "master",
+				build.getBuildStatusSummary().message,
+				build.getDurationString()));
+		return articles;
+	}
+
 }

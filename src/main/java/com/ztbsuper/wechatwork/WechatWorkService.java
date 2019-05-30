@@ -33,7 +33,10 @@ public class WechatWorkService {
 		return token;
 	}
 
-	public static void sendMessage(String corpid, String corpsecret, String agentid,String toUser , String message) throws UnirestException {
+	/**
+	 * 文本消息
+	 */
+	public static void sendMessage(String corpid, String corpsecret, String agentid, String toUser, String message) throws UnirestException {
 		String url = String.format("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s", getAccessToken(corpid, corpsecret));
 		JSONObject param = new JSONObject();
 		JSONObject content = new JSONObject();
@@ -44,7 +47,37 @@ public class WechatWorkService {
 		param.put("text", content);
 		param.put("safe", "0");
 
-		String response = Unirest.post(url)
+		Unirest.post(url)
+				.header("Content-Type", "application/json")
+				.body(param.toJSONString())
+				.asString().getBody();
+
+	}
+
+	/*
+	 * content 内容格式
+	 * {
+	 * "articles" : [
+	 * {
+	 * "title" : "116-carnet-base-service (#5) => SUCCESS",
+	 * "description" : "今年中秋节公司有豪礼相送",
+	 * "url" : "http://baidu.com",
+	 * "picurl" : "http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/sign-check-icon.png"
+	 * }
+	 * ]
+	 * }
+	 */
+	public static void sendArticleMessage(String corpid, String corpsecret, String agentid, String toUser, Articles... articles) throws UnirestException {
+		String url = String.format("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s", getAccessToken(corpid, corpsecret));
+		JSONObject param = new JSONObject();
+		JSONObject content = new JSONObject();
+		content.put("articles", articles);
+		param.put("touser", toUser);
+		param.put("msgtype", "news");
+		param.put("agentid", agentid);
+		param.put("news", content);
+		param.put("safe", "0");
+		Unirest.post(url)
 				.header("Content-Type", "application/json")
 				.body(param.toJSONString())
 				.asString().getBody();

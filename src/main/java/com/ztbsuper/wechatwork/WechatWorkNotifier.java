@@ -1,19 +1,15 @@
 package com.ztbsuper.wechatwork;
 
 import hudson.Extension;
-
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.JobProperty;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import org.kohsuke.stapler.DataBoundConstructor;
-
-import java.io.IOException;
 
 /**
  * Created by lcs on 2019-05-28.
@@ -53,7 +49,16 @@ public class WechatWorkNotifier extends Notifier {
 		try {
 			WechatWorkService.sendMessage(this.corpid, this.corpsecret, this.agentid, this.toUser, message);
 		} catch (Exception e) {
-//			log.error("send message error", e);
+			e.printStackTrace();
+		}
+
+	}
+
+	public void sendMessage(Articles article) {
+		try {
+			WechatWorkService.sendArticleMessage(this.corpid, this.corpsecret, this.agentid, this.toUser, article);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}

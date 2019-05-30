@@ -21,15 +21,15 @@
         <f:textbox  />
     </f:entry>
     <f:entry title="在启动构建时通知">
-        <f:checkbox name="onStart" value="true" checked="${instance.isOnStart()}"/>
+        <f:checkbox name="onStart" value="true" checked="${instance.getOnStart()}"/>
     </f:entry>
     <f:entry title="构建成功时通知">
-        <f:checkbox name="onSuccess" value="true" checked="${instance.isOnSuccess()}"/>
+        <f:checkbox name="onSuccess" value="true" checked="${instance.getOnSuccess()}"/>
     </f:entry>
     <f:entry title="构建失败时通知">
-        <f:checkbox name="onFailed" value="true" checked="${instance.isOnFailed()}"/>
+        <f:checkbox name="onFailed" value="true" checked="${instance.getOnFailed()}"/>
     </f:entry>
     <f:entry title="构建中断时通知">
-        <f:checkbox name="onAbort" value="true" checked="${instance.isOnAbort()}"/>
+        <f:checkbox name="onAbort" value="true" checked="${instance.getOnAbort()}"/>
     </f:entry>
 </j:jelly>

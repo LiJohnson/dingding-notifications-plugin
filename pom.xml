@@ -9,7 +9,7 @@
         <relativePath />
     </parent>
     <groupId>com.ztbsuper</groupId>
-    <artifactId>dingding-notifications</artifactId>
+    <artifactId>wechatwork-notifications</artifactId>
     <version>1.10-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
@@ -27,9 +27,9 @@
         -->
     </properties>
 
-    <name>Dingding[钉钉] Plugin</name>
-    <description>钉钉Jenkins通知插件</description>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/Dingding+Notification+Plugin</url>
+    <name>企业微信 Plugin</name>
+    <description>企业微信通知插件</description>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/wechatwork+Notification+Plugin</url>
 
     <!-- The default licence for Jenkins OSS Plugins is MIT. Substitute for the applicable one if needed. -->
 
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
-            <version>1.7</version>
+            <version>1.8</version>
         </dependency>
         <dependency>
             <groupId>com.mashape.unirest</groupId>
@@ -98,13 +98,4 @@
         <!--</dependency>-->
 
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

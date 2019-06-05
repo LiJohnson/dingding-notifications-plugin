@@ -9,39 +9,49 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
-import java.util.Date;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by lcs on 2019-05-28.
  */
 @Extension
 public class JobListener extends RunListener<AbstractBuild> {
+
+	private final static List<String> SKIP_PROJECT_NAME = Collections.singletonList("default");
+
 	@Override
 	public void onCompleted(AbstractBuild build, @Nonnull TaskListener listener) {
 		WechatWorkNotifier wechatWorkNotifier = getService(build);
 		Result result = build.getResult();
-
-		if(!checkSendMessage(result, wechatWorkNotifier)) return;
+		if(SKIP_PROJECT_NAME.contains(build.getProject().getDisplayName())){
+			return;
+		}
+		if (!checkSendMessage(result, wechatWorkNotifier)) return;
 
 		wechatWorkNotifier.sendMessage(getBuildMessage(wechatWorkNotifier, build, result));
 	}
 
 	private static Boolean checkSendMessage(Result result, WechatWorkNotifier wechatWorkNotifier) {
-		if(result == null ){
+		if (result == null) {
 			return wechatWorkNotifier.getOnAbort();
-		}else if(result.equals(Result.SUCCESS) ){
+		} else if (result.equals(Result.SUCCESS)) {
 			return wechatWorkNotifier.getOnSuccess();
-		}else if(result.equals(Result.FAILURE) ){
+		} else if (result.equals(Result.FAILURE)) {
 			return wechatWorkNotifier.getOnFailed();
-		}else {
+		} else {
 			return wechatWorkNotifier.getOnAbort();
 		}
 	}
 
 	@Override
 	public void onStarted(AbstractBuild build, TaskListener listener) {
+		if (SKIP_PROJECT_NAME.contains(build.getProject().getDisplayName())) {
+			return;
+		}
+
 		WechatWorkNotifier wechatWorkNotifier = getService(build);
-		if(wechatWorkNotifier.getOnStart()){
+		if (wechatWorkNotifier.getOnStart()) {
 			String content = String.format("项目 [%s](%s) 开始构建", build.getProject().getDisplayName(), build.getDisplayName());
 			wechatWorkNotifier.sendMessage(content);
 		}
@@ -58,20 +68,20 @@ public class JobListener extends RunListener<AbstractBuild> {
 				.findFirst()
 				.orElse(null);
 
-		Assert.notNull(wechatWorkNotifier,"没有找到 WechatWorkNotifier");
+		Assert.notNull(wechatWorkNotifier, "没有找到 WechatWorkNotifier");
 		return wechatWorkNotifier;
 	}
 
-	private static Articles getBuildMessage(WechatWorkNotifier wechatWorkNotifier ,AbstractBuild build, Result result) {
+	private static Articles getBuildMessage(WechatWorkNotifier wechatWorkNotifier, AbstractBuild build, Result result) {
 		Articles articles = new Articles();
-		if(StringUtils.isNotBlank(wechatWorkNotifier.getJenkinsURL())){
+		if (StringUtils.isNotBlank(wechatWorkNotifier.getJenkinsURL())) {
 			articles.setUrl(wechatWorkNotifier.getJenkinsURL() + (wechatWorkNotifier.getJenkinsURL().endsWith("/") ? "" : "/") + build.getUrl());
 		}
-		if( Result.SUCCESS.equals(result)){
+		if (Result.SUCCESS.equals(result)) {
 			articles.setPicurl("http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/sign-check-icon.png");
-		}else if( Result.FAILURE.equals(result) ){
+		} else if (Result.FAILURE.equals(result)) {
 			articles.setPicurl("http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/sign-error-icon.png");
-		}else {
+		} else {
 			articles.setPicurl("http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/sign-ban-icon.png");
 		}
 		String node = build.getBuiltOn().getNodeName();

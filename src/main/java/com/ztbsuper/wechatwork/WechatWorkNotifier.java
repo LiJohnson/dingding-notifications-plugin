@@ -1,6 +1,6 @@
 package com.ztbsuper.wechatwork;
 
-import com.alibaba.fastjson.JSONObject;
+import net.sf.json.JSONObject;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -12,6 +12,7 @@ import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
+import org.springframework.util.StringUtils;
 
 /**
  * Created by lcs on 2019-05-28.
@@ -45,20 +46,28 @@ public class WechatWorkNotifier extends Notifier {
 
 	public void sendMessage(String message) {
 		try {
-			WechatWorkService.sendMessage(this.messageApiUrl,  this.agentid, this.toUser, message);
+			WechatWorkService.sendMessage(
+					defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
+					defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
+					defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()),
+					message);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void sendMessage(Articles article) {
 		try {
-			WechatWorkService.sendArticleMessage(this.messageApiUrl, this.agentid, this.toUser, article);
+			WechatWorkService.sendArticleMessage(
+					defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
+					defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
+					defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()), article);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+	}
+	private static String defaultVal( String val1,String val2 ){
+		return StringUtils.hasLength(val1) ? val1 : val2;
 	}
 
 	@Override
@@ -67,14 +76,12 @@ public class WechatWorkNotifier extends Notifier {
 	}
 
 	@Override
-	public BuildStepDescriptor getDescriptor() {
-		return super.getDescriptor();
+	public WechatWorkNotifierDescriptor getDescriptor() {
+		return (WechatWorkNotifierDescriptor)super.getDescriptor();
 	}
 
 	@Extension
 	public static class WechatWorkNotifierDescriptor extends BuildStepDescriptor<Publisher> {
-
-
 		@Override
 		public boolean isApplicable(Class<? extends AbstractProject> jobType) {
 			return true;
@@ -85,7 +92,49 @@ public class WechatWorkNotifier extends Notifier {
 			return "企业微信通知器配置";
 		}
 
+		/**
+		 * 默认消息api
+		 */
+		private String defaultMessageApiUrl;
+		/**
+		 * 默认发送对角
+		 */
+		private String defaultToUser;
+		/**
+		 * 默认应用
+		 */
+		private String defaultAgentid;
+
+		public String getDefaultMessageApiUrl() {
+			return defaultMessageApiUrl;
+		}
+
+		public void setDefaultMessageApiUrl(String defaultMessageApiUrl) {
+			this.defaultMessageApiUrl = defaultMessageApiUrl;
+		}
+
+		public String getDefaultToUser() {
+			return defaultToUser;
+		}
+
+		public void setDefaultToUser(String defaultToUser) {
+			this.defaultToUser = defaultToUser;
+		}
+
+		public String getDefaultAgentid() {
+			return defaultAgentid;
+		}
+
+		public void setDefaultAgentid(String defaultAgentid) {
+			this.defaultAgentid = defaultAgentid;
+		}
+
 		public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+			this.defaultMessageApiUrl = formData.getString("defaultMessageApiUrl");
+			this.defaultAgentid = formData.getString("defaultAgentid");
+			this.defaultToUser = formData.getString("defaultToUser");
+			save();
+			super.configure(req, formData);
 			return true;
 		}
 	}

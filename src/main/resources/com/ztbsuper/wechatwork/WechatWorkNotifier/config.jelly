@@ -6,13 +6,13 @@
     See global.jelly for a general discussion about jelly script.
     -->
     <f:entry title="messageApiUrl" field="messageApiUrl">
-        <f:textbox default="${descriptor.getDefaultURL()}" placeholder="${}" />
+        <f:textbox placeholder="${descriptor.getDefaultMessageApiUrl()}" />
     </f:entry>
-    <f:entry title="企业微信 agentid" field="agentid">
-        <f:textbox  />
+    <f:entry title="企业微信 agentid" field="agentid"  >
+        <f:textbox  placeholder="${descriptor.getDefaultAgentid()}" />
     </f:entry>
     <f:entry title="企业微信 toUser" field="toUser">
-        <f:textbox  />
+        <f:textbox  placeholder="${descriptor.getDefaultToUser()}"/>
     </f:entry>
     <f:entry title="在启动构建时通知">
         <f:checkbox name="onStart" value="true" checked="${instance.getOnStart()}"/>

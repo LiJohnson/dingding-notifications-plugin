@@ -30,7 +30,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 		}
 		if (!checkSendMessage(result, wechatWorkNotifier)) return;
 
-		wechatWorkNotifier.sendMessage(getBuildMessage(wechatWorkNotifier, build, result));
+		wechatWorkNotifier.sendMessage(getBuildMessage(build, result));
 	}
 
 	private static Boolean checkSendMessage(Result result, WechatWorkNotifier wechatWorkNotifier) {
@@ -70,7 +70,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 		return (WechatWorkNotifier) a.get();
 	}
 
-	private static Articles getBuildMessage(WechatWorkNotifier wechatWorkNotifier, AbstractBuild build, Result result) {
+	private static Articles getBuildMessage( AbstractBuild build, Result result) {
 		Articles articles = new Articles();
 		if (Result.SUCCESS.equals(result)) {
 			articles.setPicurl("http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/sign-check-icon.png");
@@ -80,12 +80,11 @@ public class JobListener extends RunListener<AbstractBuild> {
 			articles.setPicurl("http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/sign-ban-icon.png");
 		}
 		String node = build.getBuiltOn().getNodeName();
-		articles.setTitle(String.format("%s (%s) => %s", build.getProject().getDisplayName(), build.getDisplayName(), result == null ? "null" : result));
+		articles.setTitle(String.format("%s (%s) => %s", build.getProject().getDisplayName(), build.getDisplayName(), result == null ? "UNKNOWN" : result));
 		articles.setDescription(String.format(
-				"node:%s,\nsummary:%s,\nduration:%s\nurl:%s", StringUtils.isBlank(node) ? node : "master",
+				"node:%s,\nsummary:%s,\nduration:%s", StringUtils.isBlank(node) ? node : "master",
 				build.getBuildStatusSummary().message,
-				build.getDurationString(),
-				build.getUrl()
+				build.getDurationString()
 		));
 		return articles;
 	}

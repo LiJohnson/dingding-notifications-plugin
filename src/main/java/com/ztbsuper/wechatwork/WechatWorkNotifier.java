@@ -1,5 +1,6 @@
 package com.ztbsuper.wechatwork;
 
+import com.alibaba.fastjson.JSONObject;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -10,15 +11,14 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * Created by lcs on 2019-05-28.
  */
 public class WechatWorkNotifier extends Notifier {
 
-	private String jenkinsURL;
-	private String corpid;
-	private String corpsecret;
+	private String messageApiUrl;
 	private String agentid;
 	private String toUser;
 	private Boolean onStart;
@@ -27,11 +27,9 @@ public class WechatWorkNotifier extends Notifier {
 	private Boolean onAbort;
 
 	@DataBoundConstructor
-	public WechatWorkNotifier(String jenkinsURL, String corpid, String corpsecret, String agentid, String toUser, Boolean onStart, Boolean onSuccess, Boolean onFailed, Boolean onAbort) {
+	public WechatWorkNotifier(String messageApiUrl, String agentid, String toUser, Boolean onStart, Boolean onSuccess, Boolean onFailed, Boolean onAbort) {
 		super();
-		this.jenkinsURL = jenkinsURL;
-		this.corpid = corpid;
-		this.corpsecret = corpsecret;
+		this.messageApiUrl = messageApiUrl;
 		this.agentid = agentid;
 		this.toUser = toUser;
 		this.onStart = onStart;
@@ -47,7 +45,7 @@ public class WechatWorkNotifier extends Notifier {
 
 	public void sendMessage(String message) {
 		try {
-			WechatWorkService.sendMessage(this.corpid, this.corpsecret, this.agentid, this.toUser, message);
+			WechatWorkService.sendMessage(this.messageApiUrl,  this.agentid, this.toUser, message);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -56,7 +54,7 @@ public class WechatWorkNotifier extends Notifier {
 
 	public void sendMessage(Articles article) {
 		try {
-			WechatWorkService.sendArticleMessage(this.corpid, this.corpsecret, this.agentid, this.toUser, article);
+			WechatWorkService.sendArticleMessage(this.messageApiUrl, this.agentid, this.toUser, article);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,6 +70,7 @@ public class WechatWorkNotifier extends Notifier {
 	public BuildStepDescriptor getDescriptor() {
 		return super.getDescriptor();
 	}
+
 	@Extension
 	public static class WechatWorkNotifierDescriptor extends BuildStepDescriptor<Publisher> {
 
@@ -85,18 +84,10 @@ public class WechatWorkNotifier extends Notifier {
 		public String getDisplayName() {
 			return "企业微信通知器配置";
 		}
-	}
 
-	public String getJenkinsURL() {
-		return jenkinsURL;
-	}
-
-	public String getCorpid() {
-		return corpid;
-	}
-
-	public String getCorpsecret() {
-		return corpsecret;
+		public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+			return true;
+		}
 	}
 
 	public String getAgentid() {

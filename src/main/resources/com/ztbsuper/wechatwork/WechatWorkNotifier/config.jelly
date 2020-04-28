@@ -5,14 +5,8 @@
 
     See global.jelly for a general discussion about jelly script.
     -->
-    <f:entry title="jenkins URL" field="jenkinsURL">
-        <f:textbox default="${descriptor.getDefaultURL()}" />
-    </f:entry>
-    <f:entry title="企业微信 corpid" field="corpid">
-        <f:textbox  />
-    </f:entry>
-    <f:entry title="企业微信 corpsecret" field="corpsecret">
-        <f:textbox  />
+    <f:entry title="messageApiUrl" field="messageApiUrl">
+        <f:textbox default="${descriptor.getDefaultURL()}" placeholder="${}" />
     </f:entry>
     <f:entry title="企业微信 agentid" field="agentid">
         <f:textbox  />

@@ -19,15 +19,11 @@ import java.util.Optional;
 @Extension
 public class JobListener extends RunListener<AbstractBuild> {
 
-	private final static List<String> SKIP_PROJECT_NAME = Collections.singletonList("default");
 
 	@Override
 	public void onCompleted(AbstractBuild build, @Nonnull TaskListener listener) {
 		WechatWorkNotifier wechatWorkNotifier = getService(build);
 		Result result = build.getResult();
-		if(SKIP_PROJECT_NAME.contains(build.getProject().getDisplayName())){
-			return;
-		}
 		if (!checkSendMessage(result, wechatWorkNotifier)) return;
 
 		wechatWorkNotifier.sendMessage(getBuildMessage(build, result));
@@ -47,10 +43,6 @@ public class JobListener extends RunListener<AbstractBuild> {
 
 	@Override
 	public void onStarted(AbstractBuild build, TaskListener listener) {
-		if (SKIP_PROJECT_NAME.contains(build.getProject().getDisplayName())) {
-			return;
-		}
-
 		WechatWorkNotifier wechatWorkNotifier = getService(build);
 		if (wechatWorkNotifier.getOnStart()) {
 			String content = String.format("项目 [%s](%s) 开始构建", build.getProject().getDisplayName(), build.getDisplayName());

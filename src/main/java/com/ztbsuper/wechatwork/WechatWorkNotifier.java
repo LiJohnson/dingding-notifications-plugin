@@ -82,6 +82,9 @@ public class WechatWorkNotifier extends Notifier {
 
 	@Extension
 	public static class WechatWorkNotifierDescriptor extends BuildStepDescriptor<Publisher> {
+		public WechatWorkNotifierDescriptor() {
+			load();
+		}
 		@Override
 		public boolean isApplicable(Class<? extends AbstractProject> jobType) {
 			return true;

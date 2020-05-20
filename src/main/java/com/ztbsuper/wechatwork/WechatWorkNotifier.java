@@ -56,16 +56,6 @@ public class WechatWorkNotifier extends Notifier {
 		}
 	}
 
-	public void sendMessage(Articles article) {
-		try {
-			WechatWorkService.sendArticleMessage(
-					defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
-					defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
-					defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()), article);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	private static String defaultVal( String val1,String val2 ){
 		return StringUtils.hasLength(val1) ? val1 : val2;
 	}

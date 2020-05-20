@@ -31,7 +31,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 		String status = Result.SUCCESS.equals(result) ? "✅" : Result.FAILURE.equals(result) ? "‼️" : "⚠️";
 		String node = build.getBuiltOn().getNodeName();
 		String desc = String.format(
-				"### desc \n\n- node:%s\n- summary:%s\n- duration:%s", StringUtils.isBlank(node) ? "master" : node,
+				"### desc \n\n- node : %s\n- summary : %s\n- duration : %s", StringUtils.isBlank(node) ? "master" : node,
 				build.getBuildStatusSummary().message,
 				build.getDurationString()
 		);

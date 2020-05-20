@@ -11,8 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,8 +20,15 @@ import java.util.stream.Collectors;
 @Extension
 public class JobListener extends RunListener<AbstractBuild> {
 
+	private static boolean isDefaultMatrixProjectName(AbstractBuild build){
+		if ("hudson.matrix.MatrixRun".equals(build.getClass().getName()) && "default".equals(build.getProject().getName())) {
+			return true;
+		}
+		return false;
+	}
 	@Override
 	public void onCompleted(AbstractBuild build, @Nonnull TaskListener listener) {
+		if(isDefaultMatrixProjectName(build)) return;
 		WechatWorkNotifier wechatWorkNotifier = getService(build);
 		Result result = build.getResult();
 		if (!checkSendMessage(result, wechatWorkNotifier)) return;
@@ -52,6 +57,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 
 	@Override
 	public void onStarted(AbstractBuild build, TaskListener listener) {
+		if(isDefaultMatrixProjectName(build)) return;
 		WechatWorkNotifier wechatWorkNotifier = getService(build);
 		if (wechatWorkNotifier.getOnStart()) {
 			String content = String.format("# 🙏🏻【%s】 build started\n\n%s",
@@ -67,7 +73,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 				.collect(Collectors.joining("\n"));
 
 		String url = String.format("%sjob/%s/%s/console", JenkinsLocationConfiguration.get().getUrl(), build.getProject().getDisplayName(), build.getNumber());
-		return String.format("## params \n%s \n\n### [build(%s)](%s)\n\n %s", params, build.getDisplayName(), url, url);
+		return String.format("### params \n%s \n\n### [build(%s)](%s)\n\n %s", params, build.getDisplayName(), url, url);
 	}
 
 	private WechatWorkNotifier getService(AbstractBuild build) {

@@ -45,15 +45,11 @@ public class WechatWorkNotifier extends Notifier {
 	}
 
 	public void sendMessage(String message) {
-		try {
-			WechatWorkService.sendMessage(
-					defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
-					defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
-					defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()),
-					message);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		WechatWorkService.sendMessage(
+				defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
+				defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
+				defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()),
+				message);
 	}
 
 	private static String defaultVal( String val1,String val2 ){

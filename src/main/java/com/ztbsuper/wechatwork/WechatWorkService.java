@@ -16,7 +16,7 @@ public class WechatWorkService {
 	/**
 	 * 文本消息
 	 */
-	public static void sendMessage(String messageApiUrl,String agentid, String toUser, String message) throws UnirestException {
+	public static void sendMessage(String messageApiUrl,String agentid, String toUser, String message) {
 		JSONObject param = new JSONObject();
 		JSONObject content = new JSONObject();
 		content.put("content", message);
@@ -26,10 +26,17 @@ public class WechatWorkService {
 		param.put("markdown", content);
 		param.put("safe", "0");
 
-		String res = Unirest.post(messageApiUrl)
-				.header("Content-Type", "application/json")
-				.body(param.toJSONString())
-				.asString().getBody();
-		LOGGER.finer(String.format("%s %s %s", messageApiUrl, param.toJSONString(), res));
+		String res = null;
+		try {
+			res = Unirest.post(messageApiUrl)
+					.header("Content-Type", "application/json")
+					.body(param.toJSONString())
+					.asString().getBody();
+		} catch (UnirestException e) {
+			e.printStackTrace();
+		} finally {
+			LOGGER.finer(String.format("%s %s %s", messageApiUrl, param.toJSONString(), res));
+		}
+
 	}
 }

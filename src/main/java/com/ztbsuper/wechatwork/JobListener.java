@@ -41,15 +41,13 @@ public class JobListener extends RunListener<AbstractBuild> {
 	}
 
 	private static Boolean checkSendMessage(Result result, WechatWorkNotifier wechatWorkNotifier) {
-		if (result == null) {
-			return wechatWorkNotifier.getOnAbort();
-		} else if (result.equals(Result.SUCCESS)) {
+		 if (Result.SUCCESS.equals(result)) {
 			return wechatWorkNotifier.getOnSuccess();
-		} else if (result.equals(Result.FAILURE)) {
-			return wechatWorkNotifier.getOnFailed();
-		} else {
-			return wechatWorkNotifier.getOnAbort();
-		}
+		 } else if (Result.FAILURE.equals(result)) {
+			 return wechatWorkNotifier.getOnFailed();
+		 } else {
+			 return wechatWorkNotifier.getOnAbort();
+		 }
 	}
 
 	@Override

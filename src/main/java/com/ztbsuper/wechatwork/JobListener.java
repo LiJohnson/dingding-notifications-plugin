@@ -32,8 +32,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 		WechatWorkNotifier wechatWorkNotifier = getService(build);
 		Result result = build.getResult();
 		if (!checkSendMessage(result, wechatWorkNotifier)) return;
-
-		String status = Result.SUCCESS.equals(result) ? "✅" : Result.FAILURE.equals(result) ? "🚫️" : "⚠️";
+		String status = Result.SUCCESS.equals(result) ? "☀️" : Result.FAILURE.equals(result) ? "🌧" : "🌥️";
 		String node = build.getBuiltOn().getNodeName();
 		String desc = String.format(
 				"> **desc** `%s` `%s` `%s`",
@@ -41,7 +40,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 				build.getBuildStatusSummary().message,
 				build.getDurationString()
 		);
-		String message =  String.format("## %s【%s】build %s\n%s\n%s", status, build.getProject().getDisplayName(), result == null ? "UNKNOWN" : result, desc, getBuildInfo(build));
+		String message =  String.format("## %s `%s` build %s\n%s\n%s", status, build.getProject().getDisplayName(), result == null ? "UNKNOWN" : result, desc, getBuildInfo(build));
 
 		wechatWorkNotifier.sendMessage(message);
 	}
@@ -61,7 +60,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 		if(isDefaultMatrixProjectName(build)) return;
 		WechatWorkNotifier wechatWorkNotifier = getService(build);
 		if (wechatWorkNotifier.getOnStart()) {
-			String content = String.format("## 🙏🏻【%s】 build started\n\n%s",
+			String content = String.format("## 🙏🏻 `%s` build started\n\n%s",
 					build.getProject().getDisplayName(),
 					getBuildInfo(build));
 			wechatWorkNotifier.sendMessage(content);

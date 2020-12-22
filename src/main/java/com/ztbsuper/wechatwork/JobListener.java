@@ -79,8 +79,12 @@ public class JobListener extends RunListener<AbstractBuild> {
 
 		if (!wechatWorkNotifier.getOnStart()) return;
 
-		String content = String.format("## 💦‍【%s】 build started\n\n%s",
+		String description = build.getDescription();
+		description = StringUtils.isNotBlank(description) ? String.format("\n### %s", description) : "build started";
+
+		String content = String.format("## 🛠‍【%s】 %s\n\n%s",
 				build.getProject().getDisplayName(),
+				description,
 				getBuildInfo(build, listener));
 		wechatWorkNotifier.sendMessage(content);
 

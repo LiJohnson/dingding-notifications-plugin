@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,8 +54,15 @@ public class JobListener extends RunListener<AbstractBuild> {
 			desc = String.format("%s\n> %s", desc, build.getDescription());
 		}
 		String message = String.format("## %s【%s】build %s\n%s\n%s", status, build.getProject().getDisplayName(), result == null ? "UNKNOWN" : result, desc, getBuildInfo(build, listener));
-
 		wechatWorkNotifier.sendMessage(message);
+
+		if( Result.FAILURE.equals(result) ){
+			try {
+				wechatWorkNotifier.sendBuildLog(String.format("build-log【%s】-%s.txt", build.getProject().getDisplayName(), build.getNumber()),build.getLogInputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**

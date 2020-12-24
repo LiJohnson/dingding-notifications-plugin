@@ -14,6 +14,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
+import java.io.InputStream;
+
 /**
  * Created by lcs on 2019-05-28.
  */
@@ -50,6 +53,13 @@ public class WechatWorkNotifier extends Notifier {
 				defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
 				defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()),
 				message);
+	}
+	public void sendBuildLog(String fileName , InputStream  logInputStream) {
+		WechatWorkService.sendLogFile(
+				defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
+				defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
+				defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()),
+				fileName,logInputStream);
 	}
 
 	private static String defaultVal( String val1,String val2 ){

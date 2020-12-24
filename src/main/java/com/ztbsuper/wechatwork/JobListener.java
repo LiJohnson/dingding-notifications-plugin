@@ -12,9 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -55,10 +54,9 @@ public class JobListener extends RunListener<AbstractBuild> {
 		}
 		String message = String.format("## %s【%s】build %s\n%s\n%s", status, build.getProject().getDisplayName(), result == null ? "UNKNOWN" : result, desc, getBuildInfo(build, listener));
 		wechatWorkNotifier.sendMessage(message);
-
 		if( Result.FAILURE.equals(result) ){
 			try {
-				wechatWorkNotifier.sendBuildLog(String.format("build-log【%s】-%s.txt", build.getProject().getDisplayName(), build.getNumber()),build.getLogInputStream());
+				wechatWorkNotifier.sendBuildLog(String.format("build-log【%s】%s.txt", build.getProject().getDisplayName(), build.getNumber()),build.getLogInputStream());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -91,9 +89,12 @@ public class JobListener extends RunListener<AbstractBuild> {
 		String description = build.getDescription();
 		description = StringUtils.isNotBlank(description) ? String.format("\n### %s", description) : "build started";
 
-		String content = String.format("## 🛠‍【%s】 %s\n\n%s",
+		String buildTime = String.format("%TF %1$TT", new Date(build.getStartTimeInMillis()));
+
+		String content = String.format("## 🛠‍【%s】 %s\n\n%s\n\n%s",
 				build.getProject().getDisplayName(),
 				description,
+				buildTime,
 				getBuildInfo(build, listener));
 		wechatWorkNotifier.sendMessage(content);
 

@@ -56,7 +56,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 		wechatWorkNotifier.sendMessage(message);
 		if( Result.FAILURE.equals(result) ){
 			try {
-				wechatWorkNotifier.sendBuildLog(String.format("build-log【%s】%s.txt", build.getProject().getDisplayName(), build.getNumber()),build.getLogInputStream());
+				wechatWorkNotifier.sendBuildLog(String.format("%s.%s.log", build.getProject().getDisplayName(), build.getNumber()),build.getLogInputStream());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

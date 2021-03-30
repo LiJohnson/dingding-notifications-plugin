@@ -9,24 +9,24 @@
         <f:textbox placeholder="${descriptor.getDefaultMessageApiUrl()}" />
     </f:entry>
     <f:entry title="企业微信 agentid" field="agentid"  >
-        <f:textbox  placeholder="${descriptor.getDefaultAgentid()}" />
+        <f:select />
     </f:entry>
     <f:entry title="企业微信 toUser" field="toUser">
         <f:textbox   placeholder="${descriptor.getDefaultToUser()}"/>
     </f:entry>
     <f:entry title="企业微信 toTag" field="toTag">
-        <f:textbox  />
+        <f:textbox />
     </f:entry>
     <f:entry title="在启动构建时通知" field="onStart">
         <f:checkbox value="true" />
     </f:entry>
-    <f:entry title="构建成功时通知">
-        <f:checkbox name="onSuccess" value="true" />
+    <f:entry title="构建成功时通知" field="onSuccess">
+        <f:checkbox value="true" />
     </f:entry>
-    <f:entry title="构建失败时通知">
-        <f:checkbox name="onFailed" value="true"/>
+    <f:entry title="构建失败时通知" field="onFailed">
+        <f:checkbox value="true"/>
     </f:entry>
-    <f:entry title="构建中断时通知">
-        <f:checkbox name="onAbort" value="true" />
+    <f:entry title="构建中断时通知" field="onAbort">
+        <f:checkbox value="true" />
     </f:entry>
 </j:jelly>

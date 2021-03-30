@@ -1,5 +1,6 @@
 package com.ztbsuper.wechatwork;
 
+import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
 import hudson.Extension;
 import hudson.Launcher;
@@ -11,11 +12,13 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * Created by lcs on 2019-05-28.
@@ -52,7 +55,7 @@ public class WechatWorkNotifier extends Notifier {
 	public void sendMessage(String message) {
 		WechatWorkService.sendMessage(
 				defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
-				defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
+				defaultVal(this.agentid, this.getDescriptor().getFirstDefaultAgentid()),
 				this.toTag,
 				defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()),
 				message);
@@ -60,7 +63,7 @@ public class WechatWorkNotifier extends Notifier {
 	public void sendBuildLog(String fileName , InputStream  logInputStream) {
 		WechatWorkService.sendLogFile(
 				defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
-				defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
+				defaultVal(this.agentid, this.getDescriptor().getFirstDefaultAgentid()),
 				this.toTag,
 				defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()),
 				fileName,logInputStream);
@@ -123,7 +126,10 @@ public class WechatWorkNotifier extends Notifier {
 		public void setDefaultToUser(String defaultToUser) {
 			this.defaultToUser = defaultToUser;
 		}
-
+		public String getFirstDefaultAgentid() {
+			if(defaultAgentid == null) return null;
+			return defaultAgentid.split(",")[0].split(":")[0];
+		}
 		public String getDefaultAgentid() {
 			return defaultAgentid;
 		}
@@ -138,6 +144,19 @@ public class WechatWorkNotifier extends Notifier {
 			this.defaultToUser = formData.getString("defaultToUser");
 			save();
 			return super.configure(req, formData);
+		}
+
+		public ListBoxModel doFillAgentidItems() {
+			ListBoxModel list = new ListBoxModel();
+
+			if (!StringUtils.hasText(this.defaultAgentid)) {
+				return list;
+			}
+			Arrays.stream(this.defaultAgentid.split(","))
+					.map(item -> item.split(":"))
+					.map(arr -> new ListBoxModel.Option(arr.length > 1 ? arr[1] : arr[0], arr[0]))
+					.forEach(list::add);
+			return list;
 		}
 	}
 

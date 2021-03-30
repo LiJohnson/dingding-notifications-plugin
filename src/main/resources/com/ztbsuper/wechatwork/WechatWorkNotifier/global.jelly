@@ -12,7 +12,7 @@
     tags they use. Views are always organized according to its owner class,
     so it should be straightforward to find them.
   -->
-  <f:section title="企业微信通知器配置">
+  <f:section title="企业微信通知全局器配置">
       <f:entry title="default message api url" field="defaultMessageApiUrl" >
           <f:textbox />
       </f:entry>

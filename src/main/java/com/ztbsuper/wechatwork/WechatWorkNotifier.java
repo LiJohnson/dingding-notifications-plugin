@@ -24,6 +24,7 @@ public class WechatWorkNotifier extends Notifier {
 
 	private String messageApiUrl;
 	private String agentid;
+	private String toTag;
 	private String toUser;
 	private Boolean onStart;
 	private Boolean onSuccess;
@@ -31,11 +32,12 @@ public class WechatWorkNotifier extends Notifier {
 	private Boolean onAbort;
 
 	@DataBoundConstructor
-	public WechatWorkNotifier(String messageApiUrl, String agentid, String toUser, Boolean onStart, Boolean onSuccess, Boolean onFailed, Boolean onAbort) {
+	public WechatWorkNotifier(String messageApiUrl, String agentid, String toTag, String toUser, Boolean onStart, Boolean onSuccess, Boolean onFailed, Boolean onAbort) {
 		super();
 		this.messageApiUrl = messageApiUrl;
 		this.agentid = agentid;
 		this.toUser = toUser;
+		this.toTag = toTag;
 		this.onStart = onStart;
 		this.onSuccess = onSuccess;
 		this.onFailed = onFailed;
@@ -51,6 +53,7 @@ public class WechatWorkNotifier extends Notifier {
 		WechatWorkService.sendMessage(
 				defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
 				defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
+				this.toTag,
 				defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()),
 				message);
 	}
@@ -58,6 +61,7 @@ public class WechatWorkNotifier extends Notifier {
 		WechatWorkService.sendLogFile(
 				defaultVal(this.messageApiUrl, this.getDescriptor().defaultMessageApiUrl),
 				defaultVal(this.agentid, this.getDescriptor().getDefaultAgentid()),
+				this.toTag,
 				defaultVal(this.toUser, this.getDescriptor().getDefaultToUser()),
 				fileName,logInputStream);
 	}
@@ -96,7 +100,7 @@ public class WechatWorkNotifier extends Notifier {
 		 */
 		private String defaultMessageApiUrl;
 		/**
-		 * 默认发送对角
+		 * 默认发送对象
 		 */
 		private String defaultToUser;
 		/**
@@ -133,8 +137,7 @@ public class WechatWorkNotifier extends Notifier {
 			this.defaultAgentid = formData.getString("defaultAgentid");
 			this.defaultToUser = formData.getString("defaultToUser");
 			save();
-			super.configure(req, formData);
-			return true;
+			return super.configure(req, formData);
 		}
 	}
 
@@ -142,6 +145,9 @@ public class WechatWorkNotifier extends Notifier {
 		return agentid;
 	}
 
+	public String getToTag() {
+		return toTag;
+	}
 	public String getToUser() {
 		return toUser;
 	}

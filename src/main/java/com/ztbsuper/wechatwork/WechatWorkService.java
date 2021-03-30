@@ -20,10 +20,10 @@ public class WechatWorkService {
 	/**
 	 * 文本消息
 	 */
-	public static void sendMessage(String messageApiUrl,String agentid, String toUser, String message) {
+	public static void sendMessage(String messageApiUrl,String agentid,String toTag, String toUser, String message) {
 		JSONObject content = new JSONObject();
 		content.put("content", message);
-		sendMessage(messageApiUrl, agentid, toUser, "markdown",content);
+		sendMessage(messageApiUrl, agentid, toTag, toUser, "markdown", content);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class WechatWorkService {
 	 * @throws UnirestException
 	 * @throws JSONException
 	 */
-	public static void sendLogFile(String messageApiUrl, String agentid, String toUser, String fileName,InputStream  inputStream) {
+	public static void sendLogFile(String messageApiUrl, String agentid,String toTag, String toUser, String fileName,InputStream  inputStream) {
 		String media_id = null;
 		try {
 			media_id = Unirest.post(messageApiUrl.replace("sendMessage","uploadMedia"))
@@ -49,7 +49,7 @@ public class WechatWorkService {
 		}
 		JSONObject content = new JSONObject();
 		content.put("media_id", media_id);
-		sendMessage(messageApiUrl, agentid, toUser, "file",content);
+		sendMessage(messageApiUrl, agentid,toTag, toUser, "file",content);
 	}
 
 	/**
@@ -60,8 +60,9 @@ public class WechatWorkService {
 	 * @param msgType
 	 * @param content
 	 */
-	private static void sendMessage(String messageApiUrl,String agentid, String toUser,String msgType,JSONObject content){
+	private static void sendMessage(String messageApiUrl,String agentid, String toTag, String toUser,String msgType,JSONObject content){
 		JSONObject param = new JSONObject();
+		param.put("totag", toTag);
 		param.put("touser", toUser);
 		param.put("msgtype", msgType);
 		param.put("agentid", agentid);
